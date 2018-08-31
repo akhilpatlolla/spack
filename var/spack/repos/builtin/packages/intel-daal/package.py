@@ -1,12 +1,12 @@
 ##############################################################################
-# Copyright (c) 2013-2016, Lawrence Livermore National Security, LLC.
+# Copyright (c) 2013-2018, Lawrence Livermore National Security, LLC.
 # Produced at the Lawrence Livermore National Laboratory.
 #
 # This file is part of Spack.
 # Created by Todd Gamblin, tgamblin@llnl.gov, All rights reserved.
 # LLNL-CODE-647188
 #
-# For details, see https://github.com/llnl/spack
+# For details, see https://github.com/spack/spack
 # Please also see the NOTICE and LICENSE files for our notice and the LGPL.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -23,20 +23,23 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
-import os
-
-from spack.pkg.builtin.intel import IntelInstaller
 
 
-class IntelDaal(IntelInstaller):
-    """Intel Data Analytics Acceleration Library.
-
-    Note: You will have to add the download file to a
-    mirror so that Spack can find it. For instructions on how to set up a
-    mirror, see http://spack.readthedocs.io/en/latest/mirrors.html"""
+class IntelDaal(IntelPackage):
+    """Intel Data Analytics Acceleration Library."""
 
     homepage = "https://software.intel.com/en-us/daal"
 
+    version('2018.3.222', 'e688825c563e357b7b626ece610d6a85',
+            url="http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/13007/l_daal_2018.3.222.tgz")
+    version('2018.2.199', 'd015ff34a87a18922736b5fba0d0b0e0',
+            url="http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/12727/l_daal_2018.2.199.tgz")
+    version('2018.1.163', '12a9586734a03a956095440161fd741a',
+            url="http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/12414/l_daal_2018.1.163.tgz")
+    version('2018.0.128', '5779e670f67c33cc1c6cdcdca5e4636e',
+            url="http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/12072/l_daal_2018.0.128.tgz")
+    version('2017.4.239', 'b47e9b92d948ee312e8a98170a1c0640',
+            url="http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/12148/l_daal_2017.4.239.tgz")
     version('2017.3.196', '93221eaeb560917a129d42fb2cf02500',
             url="http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/11546/l_daal_2017.3.196.tgz")
     version('2017.2.174', 'f067d5d7b0f70914fba1f78da0361065',
@@ -51,12 +54,3 @@ class IntelDaal(IntelInstaller):
             url="http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/8687/l_daal_2016.2.181.tgz")
 
     provides('daal')
-
-    def install(self, spec, prefix):
-
-        self.intel_prefix = os.path.join(prefix, "pkg")
-        IntelInstaller.install(self, spec, prefix)
-
-        daal_dir = os.path.join(self.intel_prefix, "daal")
-        for f in os.listdir(daal_dir):
-            os.symlink(os.path.join(daal_dir, f), os.path.join(self.prefix, f))

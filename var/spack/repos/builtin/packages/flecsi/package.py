@@ -6,7 +6,7 @@
 # Created by Todd Gamblin, tgamblin@llnl.gov, All rights reserved.
 # LLNL-CODE-647188
 #
-# For details, see https://github.com/llnl/spack
+# For details, see https://github.com/spack/spack
 # Please also see the NOTICE and LICENSE files for our notice and the LGPL.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -37,24 +37,17 @@ class Flecsi(CMakePackage):
        interfaces,and dependency closures.
     """
     homepage = "http://flecsi.lanl.gov/"
-    url      = "https://github.com/laristra/flecsi/tarball/v1.0"
+    git      = "https://github.com/laristra/flecsi.git"
 
-    version('develop', git='https://github.com/laristra/flecsi', branch='master', submodules=True)
+    version('develop', branch='master', submodules=True)
 
-    variant('debug', default=False, description='Build debug version')
     variant('mpi', default=True,
             description='Build on top of mpi conduit for mpi inoperability')
 
     depends_on("cmake@3.1:", type='build')
     depends_on("legion+shared", when='~mpi')
     depends_on("legion+shared+mpi", when='+mpi')
-
-    def build_type(self):
-        spec = self.spec
-        if '+debug' in spec:
-            return 'Debug'
-        else:
-            return 'Release'
+    depends_on("parmetis")
 
     def cmake_args(self):
         options = ['-DENABLE_UNIT_TESTS=ON']
@@ -62,7 +55,6 @@ class Flecsi(CMakePackage):
         if '+mpi' in self.spec:
             options.extend([
                 '-DENABLE_MPI=ON',
-                '-DFLECSI_RUNTIME_MODEL=mpilegion'
             ])
 
         return options
